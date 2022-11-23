@@ -9,7 +9,7 @@ bytes32 constant hashF = keccak256(abi.encodePacked(genderFemale));
 bytes32 constant hashM = keccak256(abi.encodePacked(genderMale));
 
 
-contract userRecords {
+contract UserData {
     enum genderType { male, female}
     struct user {
         string name;

@@ -1,4 +1,6 @@
+python-dotenv
 flask
 flask-marshmallow
 flask-restful
+py-solc-x
 web3
