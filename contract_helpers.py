@@ -1,16 +1,21 @@
+"""
+This module if the main interface for compiling solidity code
+"""
+# TODO rename to compile.py
+# TODO remove non compilation related functionality
 from pathlib import Path
 from typing import Optional
 
 import solcx
 from web3 import Web3
 
-from model import Account, ContractCompileData
+from model import Account, CompiledContract
 
 
 def compile_from_contract_sol_file_path(
     file_path: Path,
     sol_version: Optional[str] = None,
-) -> ContractCompileData:
+) -> CompiledContract:
     """
     Pass a path to a .sol file, optionally pass a the version of the solidity compiler to use (matching the solidity version of the .sol file)
     ::param:: sol_version solc version to use. May be given as a string or Version object. If not given, the
@@ -45,7 +50,7 @@ def compile_from_contract_sol_file_path(
     file_name_with_ext = file_path.name
     file_name_no_ext = file_path.stem
     contract_data = compiled_solidity["contracts"][file_name_with_ext][file_name_no_ext]
-    return ContractCompileData(
+    return CompiledContract(
         contract_data["abi"], contract_data["evm"]["bytecode"]["object"]
     )
 
@@ -54,7 +59,7 @@ def compile_from_contract_sol_file_path(
 #   way of putting things together? Maybe an interface around the Web3 object, i.e. exposing the things
 #   that I want to be able to do?
 def deploy_compiled_contract(
-    w3: Web3, account_from: Account, contract_data: ContractCompileData
+    w3: Web3, account_from: Account, contract_data: CompiledContract
 ) -> str:
     contract_before_deploy = w3.eth.contract(
         abi=contract_data.abi, bytecode=contract_data.bytecode

@@ -2,13 +2,9 @@ from os import getenv
 from pathlib import Path
 
 from dotenv import load_dotenv
-from web3 import Web3
-from web3.gas_strategies.rpc import rpc_gas_price_strategy
 
-from contract_helpers import (
-    compile_from_contract_sol_file_path,
-    deploy_compiled_contract,
-)
+from contract_helpers import compile_from_contract_sol_file_path
+from eth_netw_interface import EthNetworkHTTPInterface
 from model import Account
 
 
@@ -22,8 +18,7 @@ if __name__ == "__main__":
     wallet_pk = getenv("ETH_WALLET_PK")
 
     # Set up interface for Ethereum network
-    w3 = Web3(Web3.HTTPProvider(http_provider_url))
-    w3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
+    eth_interface = EthNetworkHTTPInterface(http_provider_url)
 
     # Compile and deploy contract
     contract_solidity_version = "0.8.17"
@@ -33,7 +28,7 @@ if __name__ == "__main__":
     contract_compile_data = compile_from_contract_sol_file_path(
         path_to_contract_file, contract_solidity_version
     )
-    tx_address = deploy_compiled_contract(
-        w3, account_from=account_from, contract_data=contract_compile_data
+    tx_address = eth_interface.deploy_compiled_contract(
+        account_from=account_from, contract_data=contract_compile_data
     )
     print(f"Contract deployed at address: { tx_address }")
