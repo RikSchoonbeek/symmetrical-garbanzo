@@ -13,7 +13,6 @@ def deploy_contract(
     ::param:: sol_version solc version to use. E.g. "0.8.17"
     """
     eth_interface = EthNetworkHTTPInterface()
-    # TODO get contract_compile_data
     compiled_contract_data = get_compiled_contract_data(contract_name)
     tx_address = eth_interface.deploy_compiled_contract(
         account_from, compiled_contract_data

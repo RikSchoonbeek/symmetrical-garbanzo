@@ -22,5 +22,6 @@ def test_deploy_contract():
     #   and we may want to use a test version of web3.py for this
 
 
+# TODO This is a temporary way to interact with the use cases
 if __name__ == "__main__":
     test_deploy_contract()
