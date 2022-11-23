@@ -1,3 +1,7 @@
+from os import getenv
+from pathlib import Path
+
+from dotenv import load_dotenv
 from web3 import Web3
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 
@@ -14,11 +18,14 @@ class EthNetworkHTTPInterface:
     Interface for use cases for Ethereum network
     """
 
-    def __init__(self, http_provider_url: str) -> None:
+    def __init__(self) -> None:
         """
         Instantiate instance of web3.Web3, which is the main interface the web3.py package offers
         for interacting with the Ethereum network.
         """
+        env_file_path = Path().parent / ".env"
+        load_dotenv(env_file_path)
+        http_provider_url = getenv("HTTP_PROVIDER_URL")
         self._w3 = Web3(Web3.HTTPProvider(http_provider_url))
         # TODO find out what this is, and determine more logical way to do this. I can
         #   imagine a default gas price strat can be set, or determined per transaction?
