@@ -5,3 +5,4 @@ from collections import namedtuple
 # abstractions of Ethereum network concepts
 Account = namedtuple("Account", ["address", "private_key"])
 CompiledContract = namedtuple("CompiledContract", ["abi", "bytecode"])
+DeployedContract = namedtuple("DeployedContract", ["address", "abi"])
