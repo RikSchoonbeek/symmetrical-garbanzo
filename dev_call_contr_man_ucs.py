@@ -8,12 +8,13 @@ from contract_manager.use_cases import compile_contract
 
 # TODO add call for compiling each of the added contracts using
 # contract_manager.use_cases.compile_contract
-def compile_user_data_contract():
-    contract_name = "UserData"
+def call_compile_contract():
+    # contract_name = "UserData"
+    contract_name = "PrimitiveWhitelist"
     contract_solidity_version = "0.8.17"
     compile_contract(contract_name, contract_solidity_version)
 
 
 if __name__ == "__main__":
     # Here I can call the functions in this file, and comment out the ones I don't want to be executed.
-    compile_user_data_contract()
+    call_compile_contract()

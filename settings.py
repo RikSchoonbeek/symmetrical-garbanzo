@@ -1,2 +1,2 @@
 # Directory where contracts reside
-CONTRACT_DIR = 
+# CONTRACT_DIR =

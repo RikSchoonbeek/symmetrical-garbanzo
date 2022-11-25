@@ -3,7 +3,9 @@ Use cases for interacting with contract files:
 - initiating solidity file compilation
 - retrieval of compiled contract's data as model.CompiledContract, from contract's .json file
 """
+from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -17,7 +19,7 @@ def compile_contract(
     sol_version: Optional[str] = None,
 ):
     """
-    Compile contract solidity file into abi and bytecode
+    Compile contract solidity file bytecode, while also generating the abi
     ::contract_name:: name of contract's .sol file, without extension
     ::param:: sol_version solc version to use, e.g. "0.8.17". If not given, the currently active version is used. Ignored if solc_binary is also given.
               https://solcx.readthedocs.io/en/latest/using-the-compiler.html?highlight=compile_standard#compiling-with-the-standard-json-format
@@ -31,16 +33,18 @@ def compile_contract(
     with contract_file_path.open("r") as contract_file:
         contract_file_content = contract_file.read()
 
-    compiler_result = solcx.compile_standard(
+    compilation_result = solcx.compile_standard(
         {
             "language": "Solidity",
             "sources": {
-                "UserData.sol": {
+                f"{contract_name}.sol": {
                     "content": contract_file_content,
                 }
             },
             "settings": {
                 "outputSelection": {
+                    # Currently not doing anything with metadata or evm.sourceMap, but
+                    # might be valuable to store
                     "*": {"*": ["abi", "metadata", "evm.bytecode", "evm.sourceMap"]}
                 }
             },
@@ -48,8 +52,10 @@ def compile_contract(
         solc_version=sol_version,
     )
 
-    contract_data = compiler_result["contracts"][f"{contract_name}.sol"][contract_name]
-    result_file_path = Path(f"contract_manager/compiled_contracts/{contract_name}.json")
+    contract_data = compilation_result["contracts"][f"{contract_name}.sol"][
+        contract_name
+    ]
+    result_file_path = Path(f"contract_manager/compiled/{contract_name}.json")
     # TODO ask if file overwrite is ok if already exists?
     with open(result_file_path, "w", encoding="utf-8") as result_file:
         json.dump(
@@ -64,7 +70,39 @@ def compile_contract(
 
 
 def get_compiled_contract_data(contract_name: str) -> CompiledContract:
-    file_path = Path(f"contract_manager/compiled_contracts/{contract_name}.json")
+    file_path = Path(f"contract_manager/compiled/{contract_name}.json")
     with open(file_path, "r", encoding="utf-8") as file:
         compiled_data = json.load(file)
-    return CompiledContract(compiled_data["abi"], compiled_data["bytecode"])
+    return CompiledContract(
+        compiled_data["abi"], compiled_data["bytecode"], compiled_data["solidity_code"]
+    )
+
+
+def persist_contract_deployment_data(
+    contract_name: str, contract_data: dict, timestamp: datetime
+) -> None:
+    """
+    Store important data about the deployed contract.
+    The below data seems important to store so that the functionality and interface of
+    the contract isn't lost.
+    - abi
+    - address
+    - bytecode
+    - solidity_code
+    - timestamp
+    """
+    dir_path = Path(f"contract_manager/deployed/{timestamp.strftime('%y/%m/')}")
+    try:
+        os.makedirs(dir_path)
+    except FileExistsError:
+        pass
+    file_name_prefix = timestamp.strftime("%y-%m-%d-%H-%M-%S-%f")
+    file_name = f"{file_name_prefix}_{contract_name}.json"
+    file_path = dir_path / file_name
+    with open(file_path, "w", encoding="utf-8") as file:
+        json.dump(
+            contract_data,
+            file,
+            sort_keys=True,
+            indent=2,
+        )

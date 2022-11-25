@@ -37,12 +37,15 @@ class EthNetworkHTTPInterface:
         self.w3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
 
     def deploy_compiled_contract(
-        self, account_from: Account, contract_data: CompiledContract
+        self,
+        account_from: Account,
+        contract_data: CompiledContract,
+        contract_kwargs: dict = {},
     ) -> str:
         contract_before_deploy = self.w3.eth.contract(
             abi=contract_data.abi, bytecode=contract_data.bytecode
         )
-        contract_constructor = contract_before_deploy.constructor()
+        contract_constructor = contract_before_deploy.constructor(**contract_kwargs)
         transaction_data = {
             "from": account_from.address,
             "nonce": self.w3.eth.get_transaction_count(account_from.address),
@@ -52,7 +55,7 @@ class EthNetworkHTTPInterface:
             tx_data=transaction_data,
             sender_private_key=account_from.private_key,
         )
-        return tx_receipt.contractAddress
+        return tx_receipt, tx_hash
 
     def build_sign_send_tx_and_get_receipt(
         self, function: ContractFunction, tx_data: dict, sender_private_key: str

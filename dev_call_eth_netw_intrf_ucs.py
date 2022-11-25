@@ -20,8 +20,9 @@ def test_deploy_contract():
     wallet_address = getenv("ETH_WALLET_ADDRESS")
     wallet_pk = getenv("ETH_WALLET_PK")
     account_from = Account(wallet_address, wallet_pk)
-    contract_name = "UserData"
-    deploy_contract(account_from, contract_name)
+    contract_name = "PrimitiveWhitelist"
+    contract_kwargs = {"_maxWhitelistedAddresses": 10}
+    deploy_contract(account_from, contract_name, contract_kwargs)
 
     # TODO probably assert that the deployment worked
     #   and we may want to use a test version of web3.py for this
@@ -75,7 +76,7 @@ def test_interact_with_user_data_contract():
         sender_private_key=account_from.private_key,
     )
     print(
-        f"Set user name: {user_to_set.name} gender: {user_to_set.gender} in transaction with hash {tx_hash}"
+        f"Set user name: {user_to_set.name} gender: {user_to_set.gender} in transaction with hash {tx_hash.hex()}"
     )
 
     # This is free as the blockchain state isn't changed
@@ -86,5 +87,5 @@ def test_interact_with_user_data_contract():
 
 # TODO This is a temporary way to interact with the use cases
 if __name__ == "__main__":
-    # test_deploy_contract()
-    test_interact_with_user_data_contract()
+    test_deploy_contract()
+    # test_interact_with_user_data_contract()

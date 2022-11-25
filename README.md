@@ -44,3 +44,6 @@ Let's see if I can
 ## For each deployed contract have the address, abi, bytecode and solidity code in persistent storage
 Reason: what happens if the solidity is changed, recompiled, overwriting the abi and bytecode. Therefore each deployment of a contract should be seen as a separate entity, potentially unique, and therefore storing the solidity code, bytecode and abi. This should be enough to know what the contract does and how to work with it, to understand it's functionality and interface.
 - it could also be usefull to have types available that can be used to send data to and work with data that is returned from the contract, see an example of this in 
+
+- Learn to test smart contracts
+- Learn how to determine the costs of different transactions on the Ethereum network (transferring tokens, deploying and interacting with contracts)
