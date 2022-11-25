@@ -17,6 +17,11 @@ The current plan is to have two components:
 - This component will provide use cases for other components to use:
   - compile a contract's solidity into the data we need to interact with the Ethereum network
   - retrieve a compiled contract's abi and bytecode
+## 2 Ethereum network interaction
+An interface that exposes use cases for interacting with an Ethereum network. Things like:
+- Token transfer
+- Contract deployment and interaction
+- Reading data from the blockchain.
 
 # To do (definitive)
 
