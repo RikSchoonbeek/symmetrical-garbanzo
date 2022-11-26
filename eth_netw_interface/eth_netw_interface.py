@@ -63,6 +63,7 @@ class EthNetworkHTTPInterface:
         built_tx = function.build_transaction(tx_data)
         signed_tx = self.w3.eth.account.sign_transaction(built_tx, sender_private_key)
         tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        # TODO This could raise an TimeExhausted (see method details). This should probably be handled.
         tx_receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
         return (tx_receipt, tx_hash)
 
