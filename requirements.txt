@@ -1,3 +1,5 @@
 python-dotenv
 py-solc-x
+SQLAlchemy
+SQLAlchemy-Utils
 web3

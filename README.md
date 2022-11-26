@@ -25,6 +25,15 @@ An interface that exposes use cases for interacting with an Ethereum network. Th
 
 # To do (definitive)
 
+## Using SQLite and SQLAlchemy to store data I want to persist
+I started wanting to store data in files, but searching and connecting data is much easier through a relational database, so I will implement SQLite database together with SQLAlchemy to handle data storage.
+
+Here are some resources that might be useful for knowing how to work with SQLite and SQLAlchemy:
+- ORM quickstart guide: https://docs.sqlalchemy.org/en/14/orm/quickstart.html
+- This section discusses the fundamental Table, Column and MetaData objects: https://docs.sqlalchemy.org/en/14/core/metadata.html
+- Insightful SO Q&A about using Base and create_all correct: https://stackoverflow.com/questions/54118182/sqlalchemy-not-creating-tables
+
+
 ## Interacting with deployed contracts
 Currently any contract can be deployed, and I would like to build standardized functionalit to interact with the contract.
 
