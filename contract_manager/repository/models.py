@@ -58,7 +58,7 @@ class DeployedContractDB(Base):
     @classmethod
     def from_domain_instance(cls, instance: DeployedContract) -> DeployedContractDB:
         return cls(
-            abi=instance.abi,
+            abi=json.dumps(instance.abi),
             address=instance.address,
             bytecode=instance.bytecode,
             solidity_code=instance.solidity_code,
@@ -67,7 +67,7 @@ class DeployedContractDB(Base):
 
     def to_domain_instance(self) -> DeployedContract:
         return DeployedContract(
-            abi=self.abi,
+            abi=json.loads(self.abi),
             address=self.address,
             bytecode=self.bytecode,
             solidity_code=self.solidity_code,

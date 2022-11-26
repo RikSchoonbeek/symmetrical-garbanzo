@@ -40,12 +40,16 @@ class EthNetworkHTTPInterface:
         self,
         account_from: Account,
         contract_data: CompiledContract,
-        contract_kwargs: dict = {},
+        contract_constructor_kwargs: dict = None,
     ) -> str:
+        if contract_constructor_kwargs is None:
+            contract_constructor_kwargs = {}
         contract_before_deploy = self.w3.eth.contract(
             abi=contract_data.abi, bytecode=contract_data.bytecode
         )
-        contract_constructor = contract_before_deploy.constructor(**contract_kwargs)
+        contract_constructor = contract_before_deploy.constructor(
+            **contract_constructor_kwargs
+        )
         transaction_data = {
             "from": account_from.address,
             "nonce": self.w3.eth.get_transaction_count(account_from.address),

@@ -17,8 +17,8 @@ load_dotenv(env_file_path)
 
 
 def test_deploy_contract():
-    wallet_address = getenv("ETH_WALLET_ADDRESS")
-    wallet_pk = getenv("ETH_WALLET_PK")
+    wallet_address = getenv("ETH_ACCOUNT_ADDRESS_1")
+    wallet_pk = getenv("ETH_ACCOUNT_PK_1")
     account_from = Account(wallet_address, wallet_pk)
     contract_name = "PrimitiveWhitelist"
     contract_kwargs = {"_maxWhitelistedAddresses": 10}
@@ -33,14 +33,15 @@ def test_interact_with_user_data_contract():
     eth_itf = EthNetworkHTTPInterface()
 
     contract_name = "UserData"
+    # TODO create and switch with get_deployed_contract_data
     contract_data = get_compiled_contract_data(contract_name)
     contract_address = "0x0FdDb53BCCAD2f5D17A1686BaAE625C0B61F7074"
     deployed_contract = DeployedContract(contract_address, contract_data.abi)
     contract = eth_itf.get_deployed_contract(deployed_contract)
 
     chain_id = int(getenv("GOERLI_CHAIN_ID"))
-    wallet_address = getenv("ETH_WALLET_ADDRESS")
-    wallet_pk = getenv("ETH_WALLET_PK")
+    wallet_address = getenv("ETH_ACCOUNT_ADDRESS_1")
+    wallet_pk = getenv("ETH_ACCOUNT_PK_1")
     account_from = Account(wallet_address, wallet_pk)
 
     # Creating these abstractions (User and Gender), WITH VALIDATION

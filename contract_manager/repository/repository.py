@@ -10,7 +10,6 @@ from model import CompiledContract, DeployedContract
 __all__ = (
     "CompiledContractRepository",
     "DeployedContractRepository",
-    "Repository",
 )
 
 
@@ -40,10 +39,23 @@ class CompiledContractRepository(Repository):
         )
         return db_instance.to_domain_instance()
 
-    def persist(self, contract: CompiledContract):
+    def get_by_pk(self, pk: int) -> CompiledContract:
+        db_instance = self._db_session.query(CompiledContractDB).get(pk)
+        return db_instance.to_domain_instance()
+
+    def persist(self, contract: CompiledContract) -> CompiledContract:
         db_instance = CompiledContractDB.from_domain_instance(contract)
         self._db_session.add(db_instance)
         self._db_session.commit()
+        self._db_session.refresh(db_instance)
+        return CompiledContract(
+            abi=contract.abi,
+            bytecode=contract.bytecode,
+            name=contract.name,
+            solidity_code=contract.solidity_code,
+            timestamp=contract.timestamp,
+            pk=db_instance.pk,
+        )
 
 
 class DeployedContractRepository(Repository):
@@ -51,7 +63,8 @@ class DeployedContractRepository(Repository):
         db_instance = self._db_session.query(DeployedContractDB).get(address)
         return db_instance.to_domain_instance()
 
-    def persist(self, contract: DeployedContract):
+    def persist(self, contract: DeployedContract) -> DeployedContract:
         db_instance = DeployedContractDB.from_domain_instance(contract)
         self._db_session.add(db_instance)
         self._db_session.commit()
+        return contract
