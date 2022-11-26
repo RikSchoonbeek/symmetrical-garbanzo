@@ -11,6 +11,7 @@ from typing import Optional
 
 import solcx
 
+from contract_manager.repository.repository import CompiledContractRepository
 from model import CompiledContract
 
 
@@ -33,6 +34,7 @@ def compile_contract(
     with contract_file_path.open("r") as contract_file:
         contract_file_content = contract_file.read()
 
+    timestamp = datetime.now(timezone.utc)
     compilation_result = solcx.compile_standard(
         {
             "language": "Solidity",
@@ -55,18 +57,14 @@ def compile_contract(
     contract_data = compilation_result["contracts"][f"{contract_name}.sol"][
         contract_name
     ]
-    result_file_path = Path(f"contract_manager/compiled/{contract_name}.json")
-    # TODO ask if file overwrite is ok if already exists?
-    with open(result_file_path, "w", encoding="utf-8") as result_file:
-        json.dump(
-            {
-                "abi": contract_data["abi"],
-                "bytecode": contract_data["evm"]["bytecode"]["object"],
-            },
-            result_file,
-            sort_keys=True,
-            indent=2,
-        )
+    compiled_contract = CompiledContract(
+        abi=contract_data["abi"],
+        bytecode=contract_data["evm"]["bytecode"]["object"],
+        name=contract_name,
+        solidity_code=contract_file_content,
+        timestamp=timestamp,
+    )
+    CompiledContractRepository().persist(compiled_contract)
 
 
 def get_compiled_contract_data(contract_name: str) -> CompiledContract:
@@ -106,3 +104,6 @@ def persist_contract_deployment_data(
             sort_keys=True,
             indent=2,
         )
+
+    # def get_deployed_contract_data(address):
+    #     return DeployedContractRepository().get_by_address(address)
