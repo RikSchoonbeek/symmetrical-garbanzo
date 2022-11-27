@@ -14,6 +14,7 @@ from contract_manager.repository.repository import (
     CompiledContractRepository,
 )
 from model import CompiledContract
+import settings
 
 
 def compile_contract(
@@ -52,6 +53,7 @@ def compile_contract(
                 }
             },
         },
+        allow_paths=settings.PY_SOLCX_ALLOWED_PATHS,
         solc_version=sol_version,
     )
 
